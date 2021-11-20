@@ -1,0 +1,52 @@
+<?php
+$myclass = $this->view_data['myclass'];
+$allclass = $this->view_data['allclass']; 
+?>
+
+	<br>
+	<div class="mx-16 lg:px-6 bg-white border-l-4 border-gray-500 pl-4 mb-6 text-3xl rounded"><h1>Your Courses</h1></div>
+		<div class="mx-16 lg:px-6 flex flex-wrap">
+		<?php 
+			foreach($myclass as $iclass){
+				echo '<div class="flex-shrink-0 m-6 relative overflow-hidden bg-white rounded-lg max-w-xs shadow-lg">
+						<svg class="absolute bottom-0 left-0 mb-8" viewBox="0 0 375 283" fill="none" style="transform: scale(1.5); opacity: 0.2;">
+							<rect x="159.52" y="175" width="152" height="152" rx="8" transform="rotate(-45 159.52 175)" fill="blue"></rect>
+							<rect y="107.48" width="152" height="152" rx="8" transform="rotate(-45 0 107.48)" fill="blue"></rect>
+						</svg>
+						<div class="relative flex items-center cursor-pointer justify-center">
+							<img width="100%" src="'.DOMAIN.'data/courses/'.$iclass['cover_image'].'" alt="Cover Image">
+						</div>
+						<div class="relative text-white px-6 pb-6 mt-6">
+							<span class="block text-black opacity-75 -mb-1">'.$iclass['teacher_name'].'</span>
+							<div class="flex justify-between">
+								<a href="courses/view?cuid='.$iclass['course_ID'].'" class="block cursor-pointer font-semibold text-md text-black">'.$iclass['title'].'</a>
+							</div>
+						</div>
+					</div>';
+			}
+		?>
+		</div>
+	<br>
+
+	<div class="mx-16 lg:px-6 bg-white border-l-4 border-gray-500 pl-4 mb-6 text-3xl rounded"><h1>All Courses available</h1></div>
+		<div class="mx-16 lg:px-6 flex flex-wrap">
+		<?php 
+			foreach($allclass as $class){
+				echo '<div class="flex-shrink-0 m-6 relative overflow-hidden bg-white rounded-lg max-w-xs shadow-lg">
+						<svg class="absolute bottom-0 left-0 mb-8" viewBox="0 0 375 283" fill="none" style="transform: scale(1.5); opacity: 0.2;">
+							<rect x="159.52" y="175" width="152" height="152" rx="8" transform="rotate(-45 159.52 175)" fill="blue"></rect>
+							<rect y="107.48" width="152" height="152" rx="8" transform="rotate(-45 0 107.48)" fill="blue"></rect>
+						</svg>
+						<div class="relative flex items-center cursor-pointer justify-center">
+							<img width="100%" src="'.DOMAIN.'data/courses/'.$class['cover_image'].'" alt="Cover Image">
+						</div>
+						<div class="relative text-white px-6 pb-6 mt-6">
+							<span class="block text-black opacity-75 -mb-1">'.$class['teacher_name'].'</span>
+							<div class="flex justify-between">
+								<a href="#" class="block cursor-pointer font-semibold text-md text-black">'.$class['title'].'</a>
+							</div>
+						</div>
+					</div>';
+			}
+		?>
+		</div>

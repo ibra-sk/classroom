@@ -1,0 +1,206 @@
+<div class="mx-16 flex flex-wrap">
+	<div class="lg:px-6 mt-8 bg-white w-full lg:w-3/4 text-gray-700 text-lg px-4 lg:px-0 leading-relaxed">
+		<input type="hidden" value="<?php echo $this->view_data['course_ID'] ?>" id="course_ID" hidden>
+		<input type="hidden" value="<?php echo $this->view_data['chapter_ID'] ?>" id="chapter_ID" hidden>
+		<?php 
+			$forums = $this->view_data['forum'];
+			if(COUNT($forums) == 0){
+					echo '<br><br><div class="border-l-4 border-gray-500 pl-4 mb-6 italic rounded">No available message posted for this Course</div><br><br>';
+			}
+			foreach($forums as $chat){
+				echo '<div class="bg-white border-b flex items-start px-4 py-6">
+						<img class="w-12 h-12 rounded-full object-cover mr-4 shadow" src="'.DOMAIN.'data/accounts/profile/'.$chat['image'].'" alt="avatar">
+						<div class="w-full">
+							<div class="flex items-center justify-between">
+								<h2 class="text-lg font-semibold text-gray-900 -mt-1">'.$chat['fullname'].'</h2>
+								<small class="text-sm text-gray-700">'.facebook_time_ago($chat['date']).'</small>
+							</div>
+							<small class="text-sm text-gray-700">'.$chat['account_type'].'</small>
+							<div class="-mt-2 ql-editor">'.$chat['content'].'</div>
+						</div>
+					</div>';
+			}
+		?>
+		<div class="bg-white mb-4 mt-4 w-full rounded-md shadow-md">
+			<!-- Include Quill stylesheet -->
+			<link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet">
+			<script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
+
+			<div id="toolbar-container">
+				<span class="ql-formats">
+				  <select class="ql-font"></select>
+				  <select class="ql-size"></select>
+				</span>
+				<span class="ql-formats">
+				  <button class="ql-bold"></button>
+				  <button class="ql-italic"></button>
+				  <button class="ql-underline"></button>
+				  <button class="ql-strike"></button>
+				</span>
+				<span class="ql-formats">
+				  <select class="ql-color"></select>
+				  <select class="ql-background"></select>
+				</span>
+				<span class="ql-formats">
+				  <button class="ql-script" value="sub"></button>
+				  <button class="ql-script" value="super"></button>
+				</span>
+				<span class="ql-formats">
+				  <button class="ql-header" value="1"></button>
+				  <button class="ql-header" value="2"></button>
+				  <button class="ql-blockquote"></button>
+				</span>
+				<span class="ql-formats">
+				  <button class="ql-list" value="ordered"></button>
+				  <button class="ql-list" value="bullet"></button>
+				  <button class="ql-indent" value="-1"></button>
+				  <button class="ql-indent" value="+1"></button>
+				</span>
+				<span class="ql-formats">
+				  <select class="ql-align"></select>
+				</span>
+				<span class="ql-formats">
+				  <button class="ql-image"></button>
+				</span>
+			</div>
+			<div id="editor-container"></div>
+		</div>
+		<button id="postBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white mb-4 float-right font-bold py-2 px-4 rounded inline-flex items-center"><span>Post</span></button>
+		<script>
+			var quill = new Quill('#editor-container', {
+				modules: {
+				  toolbar: '#toolbar-container'
+				},
+				placeholder: 'Share your mind',
+				theme: 'snow'
+			});
+			
+			var cuid = document.querySelector('#course_ID');
+			var chid = document.querySelector('#chapter_ID');
+			var post = document.querySelector('#postBtn');
+			post.addEventListener("click", function() {
+				console.log(quill.root.innerHTML);
+				var data = new FormData();
+				data.append('course_ID', cuid.value.trim());
+				data.append('chapter_ID', chid.value.trim());
+				data.append('content', quill.root.innerHTML);
+
+				var xhr = new XMLHttpRequest();
+				xhr.open('POST', '<?php echo DOMAIN?>dashboard/classroom/forum/sendpost', true);
+				xhr.onload = function () {
+					// do something to response
+					console.log(this.responseText);
+					if(this.responseText == 'success'){
+						window.location.reload(false);
+					}else{
+						alert('Failed to submit you post, please try again');
+					}
+				};
+				xhr.send(data);					
+			});
+		</script>
+	</div>
+	<div class="p-6 lg:ml-8 mt-8 flex-1 lg:w-auto h-auto">
+		<div class="antialiased">
+			<div class="flex justify-center">
+				<nav id="nav" class="w-full relative">
+					<span class="absolute h-10 w-full bg-white rounded-lg shadow ease-out transition-transform transition-medium" ></span>
+					<ul class="relative">
+						<li>
+							<button onclick="history.back()" class="py-2 px-3 w-full flex items-center focus:outline-none focus-visible:underline">
+								<span> << </span>
+								<span class="ml-2 text-sm font-medium transition-all ease-out transition-medium">Go Back</span>
+							</button>
+						</li>
+						
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+</div>
+<?php
+function facebook_time_ago($timestamp)  
+ {  
+      $time_ago = strtotime($timestamp);  
+      $current_time = time();  
+      $time_difference = $current_time - $time_ago;  
+      $seconds = $time_difference;  
+      $minutes      = round($seconds / 60 );           // value 60 is seconds  
+      $hours           = round($seconds / 3600);           //value 3600 is 60 minutes * 60 sec  
+      $days          = round($seconds / 86400);          //86400 = 24 * 60 * 60;  
+      $weeks          = round($seconds / 604800);          // 7*24*60*60;  
+      $months          = round($seconds / 2629440);     //((365+365+365+365+366)/5/12)*24*60*60  
+      $years          = round($seconds / 31553280);     //(365+365+365+365+366)/5 * 24 * 60 * 60  
+      if($seconds <= 60)  
+      {  
+     return "Just Now";  
+   }  
+      else if($minutes <=60)  
+      {  
+     if($minutes==1)  
+           {  
+       return "one minute ago";  
+     }  
+     else  
+           {  
+       return "$minutes minutes ago";  
+     }  
+   }  
+      else if($hours <=24)  
+      {  
+     if($hours==1)  
+           {  
+       return "an hour ago";  
+     }  
+           else  
+           {  
+       return "$hours hrs ago";  
+     }  
+   }  
+      else if($days <= 7)  
+      {  
+     if($days==1)  
+           {  
+       return "yesterday";  
+     }  
+           else  
+           {  
+       return "$days days ago";  
+     }  
+   }  
+      else if($weeks <= 4.3) //4.3 == 52/12  
+      {  
+     if($weeks==1)  
+           {  
+       return "a week ago";  
+     }  
+           else  
+           {  
+       return "$weeks weeks ago";  
+     }  
+   }  
+       else if($months <=12)  
+      {  
+     if($months==1)  
+           {  
+       return "a month ago";  
+     }  
+           else  
+           {  
+       return "$months months ago";  
+     }  
+   }  
+      else  
+      {  
+     if($years==1)  
+           {  
+       return "one year ago";  
+     }  
+           else  
+           {  
+       return "$years years ago";  
+     }  
+   }  
+ } 
+?>

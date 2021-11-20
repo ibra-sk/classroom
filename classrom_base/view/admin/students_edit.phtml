@@ -1,0 +1,137 @@
+<?php $student = $this->view_data['student']; ?>
+<div class="flex flex-col">
+
+	<form action="" id="myform" method="post" enctype="multipart/form-data">
+		<div class="min-w-screen bg-gray-200 flex items-center justify-center px-5 py-5">
+			<div class="md:flex shadow-lg  mx-6 md:mx-auto max-w-lg md:max-w-2xl h-64">
+				<img class="h-full w-full md:w-1/3  object-cover rounded-lg rounded-r-none pb-5/6" id="poster" src="<?php echo DOMAIN.'data/accounts/profile/'.$student['profile_image'] ?>" alt="Profile">
+				<input name="cover_image" type="file" accept="image/x-png,image/gif,image/jpeg" required hidden>
+				<div class="w-full md:w-2/3 px-4 py-4 bg-white rounded-lg">
+					<label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="grid-first-name">Name</label>
+					<div class="flex items-center">
+						<input class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3" name="name" type="text" placeholder="Fullname" value="<?php echo $student['fullname'] ?>" required>
+					</div>
+					<label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="grid-first-name">Info</label>
+					<div class="flex items-center">
+						<input class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3" name="phone" type="text" placeholder="Phone Number" value="<?php echo $student['phone_number'] ?>" required>
+						<input class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3" name="address" type="text" placeholder="Address" value="<?php echo $student['address'] ?>">
+					</div>
+					<div class="flex items-center">
+						<input class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3" name="birth" type="text" placeholder="Birth Date" value="<?php echo $student['birth_date'] ?>" required>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		<div class="md:flex mx-6 md:mx-auto max-w-lg md:max-w-2xl">
+			<a href="<?php echo DOMAIN ?>admin/students/remove?stid=<?php echo parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY)?>" id="remvBtn" class="bg-red-600 shadow-lg text-gray-200 px-2 py-2 rounded-lg mr-4">Delete Account</a>
+			<button type="button" id="photoBtn" class="mx-auto bg-purple-900 shadow-lg text-gray-200 px-2 py-2 rounded-lg mr-4">Select Image</button>
+			<button type="submit" id="submitBtn" class="mx-auto bg-purple-900 shadow-lg text-gray-200 px-2 py-2 rounded-lg ">Save Account</button>
+		</div>
+	</form>
+	
+	
+	<div>
+		
+		<div class="container mx-auto px-4 sm:px-8">
+			<div class="py-8">
+				
+				<div class="mb-4 flex justify-between items-center">
+					<div class="flex-1 pr-4">
+						<h2 class="text-2xl font-semibold leading-tight">Enrollment Courses</h2>
+					</div>
+					<div >
+						<div class="relative md:w-full">
+							<input type="search" class="w-full pl-10 pr-4 py-2 rounded-lg shadow focus:outline-none focus:shadow-outline text-gray-600 font-medium" placeholder="Search...">
+							<div class="absolute top-0 left-0 inline-flex items-center p-2">
+								<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-400" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+									<rect x="0" y="0" width="24" height="24" stroke="none"></rect>
+									<circle cx="10" cy="10" r="7"></circle>
+									<line x1="21" y1="21" x2="15" y2="15"></line>
+								</svg>
+							</div>
+						</div>
+					</div>					
+				</div>
+				<div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+					<div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
+						<table class="min-w-full leading-normal">
+							<thead>
+								<tr>
+									<th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+										Class Title
+									</th>
+									<th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+										
+									</th>
+									<th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+										
+									</th>
+									<th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+										Action
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php
+								$courses = $this->view_data['courses'];
+								$enroll = $this->view_data['enroll'];
+								foreach($courses as $class){
+									$value = array_search($class['course_ID'],$enroll);
+									if(is_numeric($value) == false){
+										$link = '<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+													<a href="link?stid='.parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY).'&cuid='.$class['course_ID'].'&ac=link" class="bg-green-400 hover:bg-green-600 shadow-lg text-white px-2 py-2 rounded-lg ">Link as Student</a>
+												</td>';
+									}else{
+										$link = '<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+													<a href="link?stid='.parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY).'&cuid='.$class['course_ID'].'&ac=unlink" class="bg-gray-600 hover:bg-gray-900 shadow-lg text-white px-2 py-2 rounded-lg ">Unlink as Student</a>
+												</td>';
+									}
+									echo '<tr>
+											<td class="px-5 py-5 hover:bg-gray-200 cursor-pointer border-b border-gray-200 bg-white text-sm">
+												<div class="flex items-center">
+													<div class="flex-shrink-0 w-10 h-10">
+														<img class="w-full h-full rounded-lg" src="'.DOMAIN.'data/courses/'.$class['cover_image'].'" alt="">
+													</div>
+													<div class="ml-3">
+														<p class="text-gray-900 whitespace-no-wrap">
+															'.$class['title'].'
+														</p>
+													</div>
+												</div>
+											</td>
+											<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+												
+											</td>
+											<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+												'.$link.'
+											</td>
+										</tr>';
+								}
+								?>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	
+</div>
+<script>
+var photoBtn = document.querySelector('#photoBtn');
+var submitBtn = document.querySelector('#submitBtn');
+var ImgInput = document.getElementsByName('cover_image')[0];
+Displayer = document.getElementById('poster');
+
+submitBtn.addEventListener('click', function() {
+    document.getElementById("myform").submit();
+})
+photoBtn.addEventListener('click', function() {
+    ImgInput.click();
+})
+ImgInput.addEventListener('change', function() {
+    Displayer.src = window.URL.createObjectURL(ImgInput.files[0])
+})
+</script>

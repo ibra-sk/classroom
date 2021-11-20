@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	 <title><?php echo TITLE ?></title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" type="image/x-icon" href="<?php echo DOMAIN ?>assets/images/favicon.ico">
+
+	<!-- CSS here -->
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css"> -->
+	<link rel="stylesheet" href="<?php echo DOMAIN ?>assets/css/tailwind.min.css">
+	<link rel="stylesheet" href="<?php echo DOMAIN ?>assets/css/style.css">
+</head>
+<body class="h-screen overflow-hidden flex items-center justify-center" style="background: #edf2f7;">
+
+<div class="container max-w-full mx-auto py-24 px-6">
+  <div class="font-sans">
+  <div class="max-w-sm mx-auto px-6">
+    <div class="relative flex flex-wrap">
+      <div class="w-full relative">
+        <div class="mt-6">
+          <div class="text-center font-semibold text-black">
+            Enter your Email to reset password
+          </div>
+		  <!-- Alert Message -->
+		  <?php 
+			if(array_key_exists('alert', $this->view_data)) {
+				$alert = $this->view_data['alert'];
+				echo '<div class="bg-white mt-4 px-4 py-3 rounded-lg shadow-md">
+						<div class="flex text-center items-center justify-between">
+							<span class="text-red-500 font-medium text-sm">'.$alert.'</span>
+						</div>
+					  </div>';
+			}
+		  ?> 
+		  
+          <form action="<?php echo DOMAIN ?>login/forgotpwd" method="post" class="mt-8">
+            <div class="mx-auto max-w-lg">
+              <div class="py-2">
+                <span class="px-1 text-sm text-gray-600">Email</span>
+                <input placeholder="" type="text" name="email"   class="text-md block px-3 py-2  rounded-lg w-full bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none">
+              </div>
+              
+              <button type="submit" name="submit" class="mt-3 text-lg font-semibold bg-gray-800 w-full text-white rounded-lg px-6 py-3 block shadow-xl hover:text-white hover:bg-black">Continue</button>
+            </div>
+          </form>
+       
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

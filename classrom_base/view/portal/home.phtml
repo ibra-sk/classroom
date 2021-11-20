@@ -1,0 +1,234 @@
+<div class="flex flex-col">
+	<br>
+	<div class="container px-4 py-4 mx-auto block">
+		<div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto ">
+			<div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
+				<table class="min-w-full leading-normal">
+					<thead>
+						<tr>
+							<th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+								Course Title
+							</th>
+							<th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+								
+							</th>
+							<th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+								Number of Chapters
+							</th>
+							<th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+								Completion Level
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php
+						$courses = $this->view_data['courses'];
+						foreach($courses as $class){
+							$level = 'bg-red-200';
+							if($class['completion'] > 33.3){$level = 'bg-yellow-200';}
+							if($class['completion'] > 70){$level = 'bg-green-200';}
+							echo '<tr>
+									<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+										<a href="'.DOMAIN.'portal/courses">
+											<div class="flex items-center">
+												<div class="flex-shrink-0 w-10 h-10">
+													<img class="w-full h-full rounded-lg" src="'.DOMAIN.'data/courses/'.$class['image'].'" alt="">
+												</div>
+												<div class="ml-3">
+													<p class="text-gray-900 whitespace-no-wrap">
+														'.$class['title'].'
+													</p>
+												</div>
+											</div>
+										</a>
+									</td>
+									<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+									</td>
+									<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+										<p class="text-gray-900 whitespace-no-wrap">'.$class['chapters'].'</p>
+									</td>
+									<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+										<span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+											<span aria-hidden="" class="absolute inset-0 '.$level.' opacity-50 rounded-full"></span>
+											<span class="relative">'.round($class['completion']).'%</span>
+										</span>
+									</td>
+								</tr>';
+						}
+						?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+	<div class="block">
+		<div class="container px-4 py-4 mx-auto">
+			<h3 class="block text-xl text-gray-700 font-semibold mb-3"></h3>
+			<div class="flex">
+				<div class="w-1/2">
+					<div class="rounded-md p-6 bg-white shadow">
+						<div class="mb-2 pb-2">
+							<h3 class="font-semibold text-lg text-gray-600">Class Chapters Chart</h3>
+						</div>
+						<div id="chartdiv" class="w-full" style="height: 240px"></div>
+					</div>
+				</div>
+				<div class="w-1/2 ml-4">
+					<div class="rounded-md p-6 bg-white shadow">
+						<div class="mb-2 pb-2">
+							<h3 class="font-semibold text-lg text-gray-600">Courses Completion Chart</h3>
+						</div>
+						<div id="chartdiv2" class="w-full" style="height: 240px"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Resources -->
+<link rel="stylesheet" href="<?php echo DOMAIN ?>assets/vendor/sweetalert/sweetalert.css">
+<script src="<?php echo DOMAIN ?>assets/vendor/sweetalert/sweetalert-dev.js"></script>
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+<?php
+$payment = $this->view_data['payment'];
+$date = date("Y/m/d");
+$diff = abs(strtotime($payment['due_date']) - strtotime($date));
+$years = floor($diff / (365*60*60*24));
+$months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+$days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+if($days < 10){
+	echo '<script>
+			swal("Reminder, Your payment is due in '.$days.' Days");
+		  </script>';
+}
+?>
+<script>
+	function bar_chart(selector, data) {
+		// Themes begin
+		// Themes end
+		am4core.useTheme(am4themes_animated);
+
+		// Create chart instance
+		var chart = am4core.create(selector, am4charts.XYChart);
+
+		// Add data
+		chart.data = data;
+
+		// Create axes
+
+		var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+		categoryAxis.dataFields.category = "course";
+		categoryAxis.renderer.grid.template.location = 0;
+		categoryAxis.renderer.minGridDistance = 30;
+
+		categoryAxis.renderer.labels.template.adapter.add("dy", function (dy, target) {
+			if (target.dataItem && target.dataItem.index & 2 == 2) {
+				return dy + 25;
+			}
+			return dy;
+		});
+
+		var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+		// Create series
+		var series = chart.series.push(new am4charts.ColumnSeries());
+		series.dataFields.valueY = "chapters";
+		series.dataFields.categoryX = "course";
+		series.name = "Number of Chapters";
+		series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
+		series.columns.template.fillOpacity = .8;
+
+		var columnTemplate = series.columns.template;
+		columnTemplate.strokeWidth = 2;
+		columnTemplate.strokeOpacity = 1;
+	}
+
+	function radar_chart(selector, data) {
+		// Themes begin
+		// Themes end
+		am4core.useTheme(am4themes_animated);
+
+		// Create chart instance
+		var chart = am4core.create(selector, am4charts.RadarChart);
+
+
+		chart.data = data;
+
+		// Make chart not full circle
+		chart.startAngle = -90;
+		chart.endAngle = 180;
+		chart.innerRadius = am4core.percent(20);
+
+		// Set number format
+		chart.numberFormatter.numberFormat = "#.#'%'";
+
+		// Create axes
+		var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+		categoryAxis.dataFields.category = "category";
+		categoryAxis.renderer.grid.template.location = 0;
+		categoryAxis.renderer.grid.template.strokeOpacity = 0;
+		categoryAxis.renderer.labels.template.horizontalCenter = "right";
+		categoryAxis.renderer.labels.template.fontWeight = 500;
+		categoryAxis.renderer.labels.template.adapter.add("fill", function (fill, target) {
+			return (target.dataItem.index >= 0) ? chart.colors.getIndex(target.dataItem.index) : fill;
+		});
+		categoryAxis.renderer.minGridDistance = 10;
+
+		var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+		valueAxis.renderer.grid.template.strokeOpacity = 0;
+		valueAxis.min = 0;
+		valueAxis.max = 100;
+		valueAxis.strictMinMax = true;
+
+		// Create series
+		var series1 = chart.series.push(new am4charts.RadarColumnSeries());
+		series1.dataFields.valueX = "full";
+		series1.dataFields.categoryY = "category";
+		series1.clustered = false;
+		series1.columns.template.fill = new am4core.InterfaceColorSet().getFor("alternativeBackground");
+		series1.columns.template.fillOpacity = 0.08;
+		series1.columns.template.cornerRadiusTopLeft = 20;
+		series1.columns.template.strokeWidth = 0;
+		series1.columns.template.radarColumn.cornerRadius = 20;
+
+		var series2 = chart.series.push(new am4charts.RadarColumnSeries());
+		series2.dataFields.valueX = "value";
+		series2.dataFields.categoryY = "category";
+		series2.clustered = false;
+		series2.columns.template.strokeWidth = 0;
+		series2.columns.template.tooltipText = "{category}: [bold]{value}[/]";
+		series2.columns.template.radarColumn.cornerRadius = 20;
+
+		series2.columns.template.adapter.add("fill", function (fill, target) {
+			return chart.colors.getIndex(target.dataItem.index);
+		});
+
+		// Add cursor
+		chart.cursor = new am4charts.RadarCursor();
+	}
+
+	am4core.ready(function () {
+		<?php
+		$bar = '';
+		$pie = '';
+		foreach($courses as $class){
+			$bar .= '{
+							"course": "'.$class['title'].'",
+							"chapters": '.$class['chapters'].'
+						},';
+			$pie .= '{
+						"category": "'.$class['title'].'",
+						"value": '.round($class['completion']).',
+						"full": 100
+					},';	
+		}
+		?>
+		bar_chart("chartdiv", [<?php echo $bar;?>]);
+		
+		radar_chart("chartdiv2", [<?php echo $pie;?>]);
+	}); // end am4core.ready()
+
+</script>

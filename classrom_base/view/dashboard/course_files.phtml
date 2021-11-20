@@ -1,0 +1,202 @@
+<script src="<?php echo DOMAIN ?>assets/vendor/uploadify/jquery.min.js" type="text/javascript"></script>
+<script src="<?php echo DOMAIN ?>assets/vendor/uploadify/jquery.uploadifive.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo DOMAIN ?>assets/vendor/uploadify/uploadifive.css">
+<style type="text/css">
+body {
+	font: 13px Arial, Helvetica, Sans-serif;
+}
+.uploadifive-button {
+	float: left;
+	margin-right: 10px;
+}
+#queue {
+	border: 1px solid #E5E5E5;
+	height: 177px;
+	overflow: auto;
+	margin-bottom: 10px;
+	padding: 0 3px 3px;
+	width: 100%;
+}
+</style>
+
+<div class="flex flex-col">
+	<div class="min-w-screen bg-gray-200 flex items-center justify-center px-5 py-5">
+		<main class="container mx-auto max-w-screen-lg h-full">
+			<!-- file upload modal -->
+			<article aria-label="File Upload Modal" class="relative h-full flex flex-col bg-white shadow-xl rounded-md">
+				
+				<!-- scroll area -->
+				<section class="h-full overflow-auto p-8 w-full h-full flex flex-col">
+					<form>
+						<div id="queue"></div>
+						<input id="file_upload" name="file_upload" type="file" multiple="true">
+						<a style="position: relative; top: 8px;" href="javascript:$('#file_upload').uploadifive('upload')" class="rounded-sm px-3 py-1 bg-blue-700 hover:bg-blue-500 text-white focus:shadow-outline focus:outline-none">Upload Now</a>
+					</form>
+					<div class="w-full">
+						<select class="appearance-none w-5/6 bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mt-3" id="selectfilename" name="tmpfile" required>
+							<option disabled selected value="none">Select File</option>
+							<?php
+								$tmpfile = $this->view_data['tmpfile'];
+								foreach($tmpfile as $fs){
+									if($fs !== '.' && $fs !== '..'){
+										echo '<option>'.$fs.'</option>';
+									}
+								}
+							?>
+						</select>
+						<input class="appearance-none w-5/6 bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mt-3 hidden" id="drive_link" type="text" placeholder="Enter Google Drive Link">
+						<button id="glink" class="m-1 px-8 py-3 hover:bg-blue-200 underline">Google Link</button>
+					</div>
+					
+					
+					<input class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mt-3" id="title" name="filename" type="text" placeholder="File Title" required>
+					<select class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mt-3" id="selectChapter" name="chapter" required>
+						<option disabled selected value="none">Select Chapter Unit</option>
+						<?php
+							$chapters = $this->view_data['chapters'];
+							foreach($chapters as $unit){
+								echo '<option value="'.$unit['chapter_ID'].'">'.$unit['name'].'</option>';
+							}
+						?>
+					</select>
+				</section>
+
+				<!-- sticky footer -->
+				<footer class="flex justify-end px-8 pb-8 pt-4">
+					<button id="submit" id="uploadBtn" class="rounded-sm px-3 py-1 bg-blue-700 hover:bg-blue-500 text-white focus:shadow-outline focus:outline-none">
+					Link to Chapter
+					</button>
+				</footer>
+			</article>
+		</main>
+	</div>
+	
+	<div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+		<div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
+			<table class="min-w-full leading-normal">
+				<thead>
+					<tr>
+						<th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+							File Title
+						</th>
+						<th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+							File Type
+						</th>
+						<th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+							Action
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					$files = $this->view_data['files'];
+					foreach($files as $file){
+						echo '<tr>
+								<td class="px-5 py-5 hover:bg-gray-200 cursor-pointer border-b border-gray-200 bg-white text-sm">
+										<div class="flex items-center">
+											<div class="ml-3">
+												<p class="text-gray-900 whitespace-no-wrap">
+													'.$file['file_name'].'
+												</p>
+											</div>
+										</div>
+								</td>
+								<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+									<p class="text-gray-900 whitespace-no-wrap">'.$file['source_type'].'</p>
+								</td>
+								<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+									<a href="'.DOMAIN.'dashboard/classroom/filemanager/remove?fid='.$file['file_ID'].'" class="bg-red-600 w-full text-gray-200 px-2 py-2 rounded-md">DELETE</a>
+								</td>
+							</tr>';
+					}
+					?>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+
+<script>
+<?php $timestamp = time();?>
+$(function() {
+	$('#file_upload').uploadifive({
+		'auto'             : false,
+		'checkScript'      : 'check-exists.php',
+		'fileType'         : '*/*',
+		'formData'         : {
+							   'timestamp' : '<?php echo $timestamp;?>',
+							   'token'     : '<?php echo md5('unique_salt' . $timestamp);?>'
+							 },
+		'queueID'          : 'queue',
+		'uploadScript'     : '<?php echo DOMAIN?>uploadifive.php',
+		'onUploadComplete' : function(file, data) { 
+								console.log(data);
+								if(data == 'success'){
+									alert('File Has been Uploaded');
+									window.location.reload(true);
+								}else{
+									alert('Upload Failed, please try again');
+								}
+							},
+		'onError' : function(file, fileType, data) { 
+						alert('The file ' + file.name + ' could not be uploaded: ' + data); 
+					}
+	});
+});
+
+
+
+const drivelink = document.querySelector('#drive_link');
+	  uploadBtn = document.querySelector('#uploadBtn');
+	  selectfile = document.querySelector('#selectfilename');
+	  Title = document.querySelector('#title');
+	  chapter = document.querySelector('#selectChapter');
+
+let link_type = 'file';
+const glink = document.querySelector('#glink');
+glink.onclick = () => {
+	if(link_type == 'file'){
+		glink.innerHTML = 'Uploaded File';
+		link_type = 'google';
+		selectfile.classList.add("hidden");
+		drivelink.classList.remove("hidden");
+	}else{
+		glink.innerHTML = 'Google Link';
+		link_type = 'file';
+		selectfile.classList.remove("hidden");
+		drivelink.classList.add("hidden");
+	}	
+};
+	  
+document.getElementById("submit").onclick = () => {
+	
+	if(Title.value.trim() !== "" && chapter.value !== 'none'){
+		var formData = new FormData();
+		formData.append('course_ID', '<?php echo $this->view_data['course_ID'] ?>');
+		formData.append('chapter_ID', chapter.value);
+		formData.append('title', Title.value.trim());
+		formData.append("link_type", link_type);
+		if(link_type == 'file'){
+			formData.append("filename", selectfile.value.trim());
+		}else{
+			formData.append("filename", drivelink.value.trim());
+		}
+		
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', '<?php echo DOMAIN?>dashboard/classroom/filemanager/save', true);
+		xhr.onload = function () {
+			if(this.responseText == 'success'){
+				window.location.reload(true);
+			}else{
+				alert(this.responseText);
+			}
+		};
+		xhr.send(formData);
+	}else{
+		alert('Please fill all Fields');
+	}	
+};
+
+</script>

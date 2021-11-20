@@ -1,0 +1,48 @@
+<?php
+$course = $this->view_data['course'];
+?>
+<div class="flex flex-col">
+	<div class="min-w-screen bg-gray-200 flex items-center justify-center px-5 py-5">
+		<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex  my-2">
+			<form action="save" method="post" enctype="multipart/form-data" class="mb-6">
+				<input type="hidden" value="<?php echo(parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY)) ?>" name="course_ID" hidden>
+				<div class="px-3 mb-6 ">
+					<img class="h-64 w-128 object-cover rounded-lg pb-5/6" src="<?php echo DOMAIN.'data/courses/'.$course['cover_image']?>" id="poster" alt="Course">
+					<input class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3" name="cover_image" type="file" accept="image/x-png,image/gif,image/jpeg">
+				</div>
+				<div class="px-3 mb-6 ">
+					<label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="grid-first-name">Course Title</label>
+					<input class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3" name="title" type="text" placeholder="Put Title here" value="<?php echo $course['title']?>" required>
+				</div>
+				<div class="px-3 mb-6 ">
+					<label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="grid-first-name">Course Teacher</label>
+					<select class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3" name="teacher" required>
+						<option disabled selected value="0">Select this Course's Teacher</option>
+						<?php
+							$teachers = $this->view_data['teachers'];
+							foreach($teachers as $person){
+								if($person['account_ID'] == $course['teacher_ID']){
+									echo '<option selected value="'.$person['account_ID'].'">'.$person['fullname'].'</option>';
+								}else{
+									echo '<option value="'.$person['account_ID'].'">'.$person['fullname'].'</option>';
+								}
+								
+							}
+						?>
+					</select>
+				</div>
+				<div class="flex items-center justify-end">
+					<button type="submit" name="Delete" class="bg-red-600 text-gray-200 px-2 py-2 mr-2 rounded-md">DELETE</button>
+					<button type="submit" name="Save" class="bg-blue-600 text-gray-200 px-2 py-2 rounded-md">SAVE</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script>
+var ImgInput = document.getElementsByName('cover_image')[0];
+    Displayer = document.getElementById('poster');
+ImgInput.addEventListener('change', function() {
+    Displayer.src = window.URL.createObjectURL(ImgInput.files[0])
+})
+</script>

@@ -1,0 +1,42 @@
+<div class="flex flex-col">
+	<div class="min-w-screen bg-gray-200 flex items-center justify-center px-5 py-5">
+		<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex  my-2">
+			<form action="" method="post" enctype="multipart/form-data" class="mb-6">
+				<div class="px-3 mb-6 ">
+					<label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="grid-first-name">Payment Start Date</label>
+					<input class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3" name="start_date" type="date" placeholder="Payment Start Date" required>
+				</div>
+				<div class="px-3 mb-6 ">
+					<label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="grid-first-name">Payment End Date</label>
+					<input class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3" name="end_date" type="date" placeholder="Payment End Date" required>
+				</div>
+				<div class="px-3 mb-6 ">
+					<label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="grid-first-name">Payment Amount</label>
+					<input class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3" name="amount" type="number" placeholder="Amount in UGX" required>
+				</div>
+				<div class="px-3 mb-6 ">
+					<label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="grid-first-name">Course Teacher</label>
+					<select class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3" name="student" required>
+						<option disabled selected value="0">Select Student</option>
+						<?php
+							$students = $this->view_data['students'];
+							foreach($students as $person){
+								echo '<option value="'.$person['account_ID'].'">'.$person['fullname'].'</option>';
+							}
+						?>
+					</select>
+				</div>
+				<div class="flex items-center justify-end">
+					<button type="submit" name="Save" class="bg-blue-600 text-gray-200 px-2 py-2 rounded-md">SAVE</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script>
+var ImgInput = document.getElementsByName('cover_image')[0];
+    Displayer = document.getElementById('poster');
+ImgInput.addEventListener('change', function() {
+    Displayer.src = window.URL.createObjectURL(ImgInput.files[0])
+})
+</script>

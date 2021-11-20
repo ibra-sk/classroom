@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	 <title><?php echo TITLE ?></title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" type="image/x-icon" href="<?php echo DOMAIN ?>assets/images/favicon.ico">
+
+	<!-- CSS here -->
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css"> -->
+	<link rel="stylesheet" href="<?php echo DOMAIN ?>assets/css/tailwind.min.css">
+	<link rel="stylesheet" href="<?php echo DOMAIN ?>assets/css/style.css">
+	<style>
+	.rightcol {
+		background: #f7f7f7 url('<?php echo DOMAIN ?>assets/images/axiom-pattern.png');
+	}
+	</style>
+	<!-- JS here -->
+	<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.7.3/dist/alpine.min.js" defer></script>
+</head>
+<body class="bg-white">
+	<div class="absolute w-full flex flex-row">
+		<div class="w-1/2 text-white flex flex-row m-8">
+			
+			
+			
+		</div>
+		<div class="w-1/2 xl:items-center flex justify-end m-8">
+			<a href="login" class="cta bg-teal-500 hover:bg-teal-600 float-right px-3 py-2 rounded text-white font-normal">LOGIN</a>
+		</div>
+		
+	</div>
+	<div class="block md:flex align-stretch">
+		<div class="bg-teal-600 py-24 px-8 md:flex-1 md:h-screen md:p-12 md:justify-center lg:p-16 xl:p24 flex flex-col">
+			<img class="flex-col cta bg-gray-100 px-3 py-2 rounded " src="<?php echo DOMAIN ?>assets/images/logo_full.jpg" width="450px">
+			<h1 class="text-white sm:text-6xl text-center md:text-left xl:text-5xl"></h1> 
+			<p class="text-white sm:text-2xl text-center mt-3 sm:text-lg md:text-left md:text-xl xl:text-3xl"></p>
+		</div>
+		<div class="py-12 px-8 flex-1 flex-col flex justify-center md:h-screen rightcol">
+			<div class="bg-white inline-flex p-6 rounded-lg shadow-md md:-ml-12">
+				<div class="bg-orange-500 rounded-full w-12 h-12"></div>
+				<p class="ml-4 lg:text-2xl">Simple and user-friendly</p>
+			</div>
+			<div class="bg-white inline-flex p-6 rounded-lg mt-8 shadow-md md:ml-8">
+				<div class="bg-orange-500 rounded-full w-12 h-12"></div>
+				<p class="ml-4 lg:text-2xl">Comprehensive with diverse tools</p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

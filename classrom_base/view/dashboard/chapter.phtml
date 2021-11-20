@@ -1,0 +1,107 @@
+<div class="flex flex-col">
+	<div class="min-w-screen bg-gray-200 flex items-center justify-center px-5 py-5">
+		<div class="lg:px-6 mt-8 bg-white w-full lg:w-3/4 text-gray-700 text-lg px-4 lg:px-0 leading-relaxed">
+			<div class="bg-white mb-4 mt-4 w-full rounded-md ">
+				<div class="px-3 mb-6">
+					<input type="hidden" value="<?php echo $this->view_data['course_ID'] ?>" id="course_ID" hidden>
+					<input type="hidden" value="<?php if(isset($this->view_data['chapter_ID'])){ echo $this->view_data['chapter_ID'];}else{ echo 'none';}?>" id="chapter_ID" hidden>
+					<label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="grid-first-name">Chapter Title</label>
+					<input class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3" id="title" type="text" placeholder="Put Chapter Title here" value="<?php if(isset($this->view_data['name'])){ echo $this->view_data['name'];}?>">
+				</div>
+				
+				<!-- Include Quill stylesheet -->
+				<link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet">
+				<script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
+
+				<div id="toolbar-container">
+					<span class="ql-formats">
+					  <select class="ql-font"></select>
+					  <select class="ql-size"></select>
+					</span>
+					<span class="ql-formats">
+					  <button class="ql-bold"></button>
+					  <button class="ql-italic"></button>
+					  <button class="ql-underline"></button>
+					  <button class="ql-strike"></button>
+					</span>
+					<span class="ql-formats">
+					  <select class="ql-color"></select>
+					  <select class="ql-background"></select>
+					</span>
+					<span class="ql-formats">
+					  <button class="ql-script" value="sub"></button>
+					  <button class="ql-script" value="super"></button>
+					</span>
+					<span class="ql-formats">
+					  <button class="ql-header" value="1"></button>
+					  <button class="ql-header" value="2"></button>
+					  <button class="ql-blockquote"></button>
+					</span>
+					<span class="ql-formats">
+					  <button class="ql-list" value="ordered"></button>
+					  <button class="ql-list" value="bullet"></button>
+					  <button class="ql-indent" value="-1"></button>
+					  <button class="ql-indent" value="+1"></button>
+					</span>
+					<span class="ql-formats">
+					  <select class="ql-align"></select>
+					</span>
+					<span class="ql-formats">
+					  <button class="ql-image"></button>
+					</span>
+				</div>
+				<div id="editor-container"><?php if(isset($this->view_data['content'])){ echo $this->view_data['content'];}?></div>
+			</div>
+			<button id="postBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white mb-4 float-right font-bold py-2 px-4 rounded inline-flex items-center"><span>Post</span></button>
+			<button id="removeBtn" class="bg-red-400 hover:bg-red-700 text-white mb-4 float-left font-bold py-2 px-4 rounded inline-flex items-center"><span>Delete</span></button>
+			<script>
+				var quill = new Quill('#editor-container', {
+					modules: {
+					  toolbar: '#toolbar-container'
+					},
+					placeholder: 'Write Chapter content here',
+					theme: 'snow'
+				});
+				
+				var post = document.querySelector('#postBtn');
+				var remv = document.querySelector('#removeBtn');
+				var title = document.querySelector('#title');
+				var cuid = document.querySelector('#course_ID');
+				var chid = document.querySelector('#chapter_ID');
+				post.addEventListener("click", function() {
+					if(title.value.trim() == ''){
+						alert('Please fill Chapter Title first');
+					}else{
+						var data = new FormData();
+						data.append('name', title.value.trim());
+						data.append('content', quill.root.innerHTML);
+						data.append('course_ID', cuid.value.trim());
+						data.append('chapter_ID', chid.value.trim());
+
+						var xhr = new XMLHttpRequest();
+						xhr.open('POST', '<?php echo DOMAIN?>dashboard/classroom/chapter/save', true);
+						xhr.onload = function () {
+							// do something to response
+							console.log(this.responseText);
+							if(this.responseText == 'success'){
+								window.location.href = '<?php echo DOMAIN.'dashboard/classroom/view/?'.$this->view_data['course_ID'] ?>';
+							}else{
+								alert(this.responseText);
+							}
+						};
+						xhr.send(data);					
+					}					
+				});
+				
+				remv.addEventListener("click", function() {
+					var answ = confirm('Are you sure you want to Delete this Chapter?');
+					if(answ){
+						<?php if(isset($this->view_data['chapter_ID'])){ $chid = $this->view_data['chapter_ID'];}else{$chid = '';}?>
+						window.location.href = '<?php echo DOMAIN.'dashboard/classroom/chapter/remove/?cuid='.$this->view_data['course_ID'].'&chid='.$chid ?>';
+					}
+				});
+				
+			</script>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,75 @@
+<?php
+$chapters = $this->view_data['chapters'];
+$content = $this->view_data['content'];
+$rank = $this->view_data['rank']['rank_position'];
+?>
+<link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet">
+<div class="mx-16 flex flex-wrap">
+	<div class="lg:px-6 mt-8 bg-white w-full lg:w-3/4 text-gray-700 text-lg px-4 lg:px-0 leading-relaxed">
+		<div class="get-app float-right flex space-x-5 mt-10 justify-center md:justify-start">
+			<input type="hidden" id="course_ID" value="<?php echo $this->view_data['course_ID']?>" hidden>
+			<input type="hidden" id="chapter_ID" value="<?php echo $this->view_data['chapter_ID']?>" hidden>
+			<a href="<?php echo DOMAIN.'dashboard/classroom/forum?cuid='.$this->view_data['course_ID'].'&chid='.$this->view_data['chapter_ID'] ?>" class="bg-teal-500 hover:bg-green-500 hover:shadow-lg shadow-md px-3 py-2 rounded-lg flex items-center space-x-4">
+				<div class="text">
+					<p class=" text-xs font-semibold text-white">Open Forum</p>
+				</div>
+			</a>
+		</div>
+		<div id="content-container">
+			<div id="content-container" class="ql-editor">
+				<?php
+					echo $content;
+				?>
+			</div>
+			<div class="lg:px-6 mt-8 bg-blue-100 w-full lg:w-3/4 text-gray-700 text-lg px-4 lg:px-0 leading-relaxed">
+				<?php
+					function formatBytes($size, $precision = 2){
+						$base = log($size, 1024);
+						$suffixes = array('', 'K', 'M', 'G', 'T');   
+
+						return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
+					}
+					
+					$files = $this->view_data['files'];
+					if(COUNT($files) > 0){
+							echo '<div class="border-l-4 bg-gray-500 border-gray-500 pl-4 mb-6 text-white rounded">Chapter Files</div>';
+					}
+					foreach($files as $file){
+						echo '<a class="flex flex row items-start rounded-lg bg-transparent p-2 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="'.$file['source_name'].'">
+								<div class="bg-teal-500 text-white rounded-lg p-3">
+									<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="5" viewBox="0 0 111.26 122.88" class="md:h-6 md:w-6 h-4 w-4"><g><path d="M21.78,62.8c-1.61,0-2.91-1.43-2.91-3.19c0-1.76,1.3-3.19,2.91-3.19h24.91c1.61,0,2.91,1.43,2.91,3.19 c0,1.76-1.3,3.19-2.91,3.19H21.78L21.78,62.8z M93.37,19.34h10.43c2.05,0,3.92,0.84,5.27,2.19c1.35,1.35,2.19,3.22,2.19,5.27v88.62 c0,2.06-0.84,3.92-2.19,5.27c-1.35,1.35-3.22,2.19-5.27,2.19H25.35c-2.05,0-3.92-0.84-5.27-2.19c-1.35-1.35-2.19-3.21-2.19-5.27 v-11.88H7.46c-2.05,0-3.92-0.84-5.27-2.19C0.84,100,0,98.13,0,96.08V7.46C0,5.4,0.84,3.54,2.19,2.19C3.54,0.84,5.4,0,7.46,0h78.45 c2.05,0,3.92,0.84,5.27,2.19c1.35,1.35,2.19,3.22,2.19,5.27V19.34L93.37,19.34z M24.28,103.54v11.88c0,0.29,0.12,0.56,0.32,0.75 c0.2,0.2,0.46,0.32,0.75,0.32h78.45c0.29,0,0.56-0.12,0.75-0.32c0.2-0.2,0.32-0.46,0.32-0.75V26.8c0-0.29-0.12-0.56-0.32-0.75 c-0.2-0.2-0.46-0.32-0.75-0.32H93.37v70.34c0,2.05-0.84,3.92-2.19,5.27c-1.35,1.35-3.22,2.19-5.27,2.19H24.28L24.28,103.54z M85.91,6.39H7.46c-0.29,0-0.56,0.12-0.75,0.32c-0.2,0.2-0.32,0.46-0.32,0.75v88.62c0,0.29,0.12,0.56,0.32,0.75 c0.2,0.2,0.46,0.32,0.75,0.32h78.45c0.29,0,0.56-0.12,0.75-0.32c0.2-0.2,0.32-0.46,0.32-0.75V7.46c0-0.29-0.12-0.56-0.32-0.75 C86.47,6.51,86.2,6.39,85.91,6.39L85.91,6.39z M21.78,28.64c-1.61,0-2.91-1.43-2.91-3.19c0-1.76,1.3-3.19,2.91-3.19h49.81 c1.61,0,2.91,1.43,2.91,3.19c0,1.76-1.3,3.19-2.91,3.19H21.78L21.78,28.64z M21.78,45.72c-1.61,0-2.91-1.43-2.91-3.19 c0-1.76,1.3-3.19,2.91-3.19h49.81c1.61,0,2.91,1.43,2.91,3.19c0,1.76-1.3,3.19-2.91,3.19H21.78L21.78,45.72z"/></g></svg>
+								</div>
+								<div class="ml-3">
+									<p class="font-semibold">'.$file['file_name'].'</p>
+									<p class="text-sm" style="text-transform:uppercase">'.$file['source_type'].'   |   '.formatBytes($file['file_info'],3).'</p>
+								</div>
+							</a>';
+					}
+				?>
+			</div>
+			<br>
+		</div>
+		
+    </div>
+	<div class="p-6 lg:ml-8 mt-8 flex-1 lg:w-auto h-auto">
+		<div class="antialiased">
+			<div class="flex justify-center">
+				<nav id="nav" class="w-full relative">
+					<span class="absolute h-10 w-full bg-white rounded-lg shadow ease-out transition-transform transition-medium" style="top:<?php echo (41 * $rank) - 41;?>px"></span>
+					<ul class="relative">
+						<?php 
+							foreach($chapters as $chapter){
+								echo '<li>
+											<a href="'.DOMAIN.'dashboard/classroom/preview?cuid='.$this->view_data['course_ID'].'&chid='.$chapter['chapter_ID'].'" class="py-2 px-3 w-full flex items-center focus:outline-none focus-visible:underline">
+												<svg class="h-6 w-6 transition-all ease-out transition-medium" viewBox="0 0 107.07 122.88" ><g><path d="M31.54,86.95c-1.74,0-3.16-1.43-3.16-3.19c0-1.76,1.41-3.19,3.16-3.19h20.5c1.74,0,3.16,1.43,3.16,3.19 c0,1.76-1.41,3.19-3.16,3.19H31.54L31.54,86.95z M31.54,42.27c-1.74,0-3.15-1.41-3.15-3.15c0-1.74,1.41-3.15,3.15-3.15h41.61 c1.74,0,3.15,1.41,3.15,3.15c0,1.74-1.41,3.15-3.15,3.15H31.54L31.54,42.27z M56.85,116.58c1.74,0,3.15,1.41,3.15,3.15 c0,1.74-1.41,3.15-3.15,3.15H7.33c-2.02,0-3.85-0.82-5.18-2.15C0.82,119.4,0,117.57,0,115.55V7.33c0-2.02,0.82-3.85,2.15-5.18 C3.48,0.82,5.31,0,7.33,0h90.02c2.02,0,3.85,0.82,5.18,2.15c1.33,1.33,2.15,3.16,2.15,5.18V72.6c0,1.74-1.41,3.15-3.15,3.15 s-3.15-1.41-3.15-3.15V7.33c0-0.28-0.12-0.54-0.3-0.73c-0.19-0.19-0.45-0.3-0.73-0.3H7.33c-0.28,0-0.54,0.12-0.73,0.3 C6.42,6.8,6.3,7.05,6.3,7.33v108.21c0,0.28,0.12,0.54,0.3,0.73c0.19,0.19,0.45,0.3,0.73,0.3H56.85L56.85,116.58z M83.35,83.7 c0-1.73,1.41-3.14,3.14-3.14c1.73,0,3.14,1.41,3.14,3.14l-0.04,14.36l14.34,0.04c1.73,0,3.14,1.41,3.14,3.14s-1.41,3.14-3.14,3.14 l-14.35-0.04l-0.04,14.34c0,1.73-1.41,3.14-3.14,3.14c-1.73,0-3.14-1.41-3.14-3.14l0.04-14.35l-14.34-0.04 c-1.73,0-3.14-1.41-3.14-3.14c0-1.73,1.41-3.14,3.14-3.14l14.36,0.04L83.35,83.7L83.35,83.7z M31.54,64.59 c-1.74,0-3.15-1.41-3.15-3.15c0-1.74,1.41-3.15,3.15-3.15h41.61c1.74,0,3.15,1.41,3.15,3.15c0,1.74-1.41,3.15-3.15,3.15H31.54 L31.54,64.59z"/></g></svg>
+												<span class="ml-2 text-sm font-medium transition-all ease-out transition-medium">'.$chapter['name'].'</span>
+											</a>
+									</li>';
+							}
+						?>			
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+</div>
